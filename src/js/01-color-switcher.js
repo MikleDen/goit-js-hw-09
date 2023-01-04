@@ -7,14 +7,18 @@ function getRandomHexColor() {
   }
 
 
-function onChangeColor(e){
+function onChangeColor(event){
+  btnStart.disabled=true;
+  btnStop.disabled=false;
     timerId = setInterval(() => {
-        body.style.backgroundColor= getRandomHexColor;
+        body.style.backgroundColor= getRandomHexColor();
         
       }, 1000);
-
+  
 }
 function onStopChangeColor(e){
+  btnStart.disabled=false;
+  btnStop.disabled=true;
     clearInterval(timerId);
 
 }
