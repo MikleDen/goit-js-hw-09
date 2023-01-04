@@ -37,7 +37,3 @@ function onSuccess(result) {
 function onError(error) {
   Notiflix.Notify.failure(error);
 }
-
-
-
-
