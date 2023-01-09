@@ -15,7 +15,7 @@ const refs = {
 const { dataDaysEl, dataHoursEl, dataMinutesEl, dataSecondsEl } = refs;
 
 btnStart.disabled = true;
-let timerId = null;
+
 
 function convertMs(ms) {
   // Number of milliseconds per unit of time
@@ -42,7 +42,7 @@ const options = {
   defaultDate: new Date(),
   minuteIncrement: 1,
   onClose(selectedDates) {
-    ;
+    
     let msSelected = selectedDates[0].getTime();
     if (msSelected < new Date()) {
       Notiflix.Notify.failure('Please choose a date in the future');
@@ -52,9 +52,10 @@ const options = {
     }
 
     let object = {};
+    let idInterval = null;
 
     const startTimer = () => {
-     
+      
       idInterval = setInterval(() => {
         const diff = msSelected - Date.now();
         if (diff <= 0) {
@@ -65,7 +66,7 @@ const options = {
         onChangeContent(addLeadingZero(object));
       }, 1000);
     };
-    btnStart.addEventListener('click', startTimer)
+    btnStart.addEventListener('click', startTimer);
     function onChangeContent({ days, hours, minutes, seconds }) {
       dataDaysEl.textContent = days;
       dataHoursEl.textContent = hours;
