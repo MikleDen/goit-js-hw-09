@@ -10,26 +10,12 @@ const refs = {
   dataMinutesEl: document.querySelector('[data-minutes]'),
   dataSecondsEl: document.querySelector('[data-seconds]'),
 };
+
+
 const { dataDaysEl, dataHoursEl, dataMinutesEl, dataSecondsEl } = refs;
 
 btnStart.disabled = true;
-
-const options = {
-  enableTime: true,
-  time_24hr: true,
-  defaultDate: new Date(),
-  minuteIncrement: 1,
-  onClose(selectedDates) {
-    msSelected = selectedDates[0].getTime();
-    if (msSelected < new Date()) {
-      Notiflix.Notify.failure('Please choose a date in the future');
-      btnStart.disabled = true;
-    } else {
-      btnStart.disabled = false;
-    }
-  },
-};
-flatpickr(inputEl, options);
+let timerId = null;
 
 function convertMs(ms) {
   // Number of milliseconds per unit of time
@@ -50,26 +36,51 @@ function convertMs(ms) {
   return { days, hours, minutes, seconds };
 }
 
-let object = {};
-
-const startTimer = () => {
-  idInterval = setInterval(() => {
-    const diff = msSelected - Date.now();
-    if (diff <= 0) {
-      clearTimeout(idInterval);
-      return;
+const options = {
+  enableTime: true,
+  time_24hr: true,
+  defaultDate: new Date(),
+  minuteIncrement: 1,
+  onClose(selectedDates) {
+    ;
+    let msSelected = selectedDates[0].getTime();
+    if (msSelected < new Date()) {
+      Notiflix.Notify.failure('Please choose a date in the future');
+      btnStart.disabled = true;
+    } else {
+      btnStart.disabled = false;
     }
-    object = convertMs(diff);
-    onChangeContent(addLeadingZero(object));
-  }, 1000);
+
+    let object = {};
+
+    const startTimer = () => {
+     
+      idInterval = setInterval(() => {
+        const diff = msSelected - Date.now();
+        if (diff <= 0) {
+          clearTimeout(idInterval);
+          return;
+        }
+        object = convertMs(diff);
+        onChangeContent(addLeadingZero(object));
+      }, 1000);
+    };
+    btnStart.addEventListener('click', startTimer)
+    function onChangeContent({ days, hours, minutes, seconds }) {
+      dataDaysEl.textContent = days;
+      dataHoursEl.textContent = hours;
+      dataMinutesEl.textContent = minutes;
+      dataSecondsEl.textContent = seconds;
+    }
+
+
+  },
 };
 
-function onChangeContent({ days, hours, minutes, seconds }) {
-  dataDaysEl.textContent = days;
-  dataHoursEl.textContent = hours;
-  dataMinutesEl.textContent = minutes;
-  dataSecondsEl.textContent = seconds;
-}
+
+
+
+
 
 function addLeadingZero(values) {
   const newValues = { ...values };
@@ -80,4 +91,5 @@ function addLeadingZero(values) {
   return newValues;
 }
 
-btnStart.addEventListener('click', startTimer);
+
+flatpickr(inputEl, options);
